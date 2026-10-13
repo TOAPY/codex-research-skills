@@ -10,8 +10,9 @@ node_modules/
 !.env.example
 *.pem
 *.key
-credentials*
-tokens*
+credentials.json
+credentials.local.*
+tokens.json
 autoresearch-results/
 research-data/
 private-data/
@@ -20,4 +21,4 @@ private-data/
 *.local.json
 *.local.toml
 work/
-tools/
+/tools/
