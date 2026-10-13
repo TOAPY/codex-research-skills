@@ -31,6 +31,7 @@
 8. Codex CLI 0.159.2 的原生 app-server `skills/list` 实测：普通项目目录发现 25 个科研用户级技能，全部 enabled=true，加载错误 0；加上原有技能总数为 37。中央仓库内发现 25 个 repo 技能；本机同时存在同名 user 副本，官方行为是同时显示，故此目录总数为 62。Cloud 使用仓库副本，不能据本机的双作用域显示推断云端有重复安装。
 9. Git 字节校验与 .gitattributes 保留上游原始文件字节，防止跨平台换行破坏哈希锁。仓库忽略规则经检查未漏掉工具包或 credentials.mjs 这类处理凭据的源码模块；它们不含真实凭据。
 10. 所有 Git 跟踪文件经过常见 Token/私钥与敏感文件名扫描。SSH/HTTPS 密钥、认证文件、安装清单、本机工具二进制、科研私人数据没有加入中央仓库。
+11. 实际执行 `sync-macos.sh` 在线获取私有仓库：Git 返回 Already up to date，复制更新 0/25。再从 GitHub 做全新检出，对比 25 个技能目录、3474 个文件，字节差异为 0。GitHub REST API 确认 private=true、默认分支 main；最终提交已推送且远端 ref 与本机一致。此验证证明远端含完整源码，并不代替 Windows 或 Cloud VM 实机验证。
 
 机器可读证据在 [verification/](verification/)；完整的原生响应仅留在工作临时目录，提交的发现报告已去除本机绝对路径。
 
