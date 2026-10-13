@@ -1,0 +1,14 @@
+{
+  "skills": 198,
+  "scientific_vendored": 173,
+  "upstream_original_files": 2008,
+  "scientific_python_scripts_parsed": 514,
+  "all_installed_source_files": 5877,
+  "upstream_byte_differences": [],
+  "reference_only": [
+    "glycoengineering",
+    "phylogenetics",
+    "primekg",
+    "rowan"
+  ]
+}

@@ -15,7 +15,8 @@ import tempfile
 REPO_DEFAULT = Path(__file__).resolve().parents[1]
 SKIP = {'.git', '__pycache__', '.pytest_cache', '.DS_Store', '.venv', 'node_modules'}
 STATE_NAME = 'research-skills-state.json'
-SECRET = re.compile(rb'(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|sk-(?:proj-)?[A-Za-z0-9_-]{40,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)')
+# OpenAI prefixes must start a token, not the last letters of a BIDS "task-" filename.
+SECRET = re.compile(rb'(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|(?<![A-Za-z0-9])sk-(?:proj-)?[A-Za-z0-9_-]{40,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)')
 
 def fail(message):
     raise RuntimeError(message)
@@ -66,6 +67,13 @@ def skills(repo):
     if not root.is_dir():
         fail(f'No repository skills: {root}')
     found = {p.name: p for p in sorted(root.iterdir()) if p.is_dir() and not p.name.startswith('.')}
+    pin_file = repo / 'UPSTREAMS.json'
+    if pin_file.is_file():
+        pins = json.loads(pin_file.read_text(encoding='utf-8'))
+        reference_only = {n for pin in pins.values() for n in pin.get('reference_only', [])}
+        blocked = set(found) & reference_only
+        if blocked:
+            fail('Reference-only licensed content must not be redistributed: ' + ', '.join(sorted(blocked)))
     if not found:
         fail('Repository contains no skills.')
     names = {}

@@ -10,3 +10,4 @@
 /sync-windows.ps1 text eol=lf
 /scripts/*.py text eol=lf
 /tests/*.py text eol=lf
+/SCIENTIFIC-AGENT-SKILLS-REPORT.md text eol=lf

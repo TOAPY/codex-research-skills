@@ -1,5 +1,7 @@
 # 科研 Skills 安装报告
 
+本报告记录首次三套技能安装的历史结果。随后新增 K-Dense 的 173 个技能，另 4 个采用上游引用，当前中央仓库共 198 个目录；追加安装与验证结果见 [SCIENTIFIC-AGENT-SKILLS-REPORT.md](SCIENTIFIC-AGENT-SKILLS-REPORT.md)。
+
 日期：2026-10-13（Asia/Shanghai）。范围仅限安装、配置、静态检查和同步验证；没有执行科研实验、启动 Autoresearch 控制器或发起模型研究调用。
 
 ## 已完成

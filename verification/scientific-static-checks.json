@@ -1,0 +1,15 @@
+{
+  "upstream_commit": "a1043ef544e3a100c28e70a736b6cf32554d0677",
+  "upstream_skills": 177,
+  "vendored_skills": 173,
+  "reference_only": [
+    "glycoengineering",
+    "phylogenetics",
+    "primekg",
+    "rowan"
+  ],
+  "static_checks": 1730,
+  "problems": [],
+  "original_files": 2008,
+  "checks_do_not_execute_skill_scripts": true
+}

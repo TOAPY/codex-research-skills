@@ -1,6 +1,7 @@
 """Hermetic tests: tiny skill fixtures only; no scientific experiments or network."""
 import argparse
 import importlib.util
+import json
 from pathlib import Path
 import subprocess
 import tempfile
@@ -50,6 +51,22 @@ class SyncTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'uncommitted'):
             M.sync(self.args)
         self.assertFalse(self.dest.exists())
+
+    def test_reference_only_content_stops_before_sync(self):
+        (self.repo/'UPSTREAMS.json').write_text(json.dumps({'scientific': {'reference_only': ['demo']}}))
+        self.run_git(self.repo, 'add', '--', 'UPSTREAMS.json')
+        self.run_git(self.repo, 'commit', '-m', 'Reference-only license fixture')
+        with self.assertRaisesRegex(RuntimeError, 'Reference-only'):
+            M.sync(self.args)
+        self.assertFalse(self.dest.exists())
+
+    def test_secret_scan_accepts_bids_names_and_rejects_credentials(self):
+        (self.skill/'data.txt').write_text('sub-01_task-' + 'memory'*10 + '_bold.nii.gz')
+        self.commit()
+        M.scan_secrets(self.repo)
+        (self.skill/'data.txt').write_text('API_KEY=' + 'sk-' + 'x'*45)
+        with self.assertRaisesRegex(RuntimeError, 'Possible credential'):
+            M.scan_secrets(self.repo)
 
     def test_installed_drift_is_preserved(self):
         M.sync(self.args)

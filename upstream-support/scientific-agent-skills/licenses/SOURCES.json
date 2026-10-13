@@ -1,0 +1,57 @@
+{
+  "Apache-2.0": {
+    "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/Apache-2.0.txt",
+    "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+    "retrieved": "2026-10-13"
+  },
+  "BSD-2-Clause": {
+    "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/BSD-2-Clause.txt",
+    "sha256": "f32fb3b417a194167cfad068223fc975ba96c5960513a10f66a3c28720aec1df",
+    "retrieved": "2026-10-13"
+  },
+  "BSD-3-Clause": {
+    "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/BSD-3-Clause.txt",
+    "sha256": "5a93d5831e1297ab10fe643e1a631e83be392896da14ee2951285a79012df69d",
+    "retrieved": "2026-10-13"
+  },
+  "GPL-2.0-only": {
+    "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/GPL-2.0-only.txt",
+    "sha256": "aaf135472f81c5b4a0dca9367e5bb5e9750032b5bebe5442b36e4c0a47430df3",
+    "retrieved": "2026-10-13"
+  },
+  "GPL-3.0-only": {
+    "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/GPL-3.0-only.txt",
+    "sha256": "fb981668c18a279e285fc4d83fba1e836cc84dd4daa73c9697d3cfd2d8aca6e0",
+    "retrieved": "2026-10-13"
+  },
+  "GPL-3.0-or-later": {
+    "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/GPL-3.0-or-later.txt",
+    "sha256": "fb981668c18a279e285fc4d83fba1e836cc84dd4daa73c9697d3cfd2d8aca6e0",
+    "retrieved": "2026-10-13"
+  },
+  "CC-BY-4.0": {
+    "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/CC-BY-4.0.txt",
+    "sha256": "d557539df68e771cc1eedcc91d13f70fca930e508d11eedcafa4b15db49e3744",
+    "retrieved": "2026-10-13"
+  },
+  "CC-BY-NC-SA-4.0": {
+    "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/CC-BY-NC-SA-4.0.txt",
+    "sha256": "600ca4e25fe11762b75a97e714707fab48bb778374e92d24c6ca068791661c11",
+    "retrieved": "2026-10-13"
+  },
+  "PolyForm-Noncommercial-1.0.0": {
+    "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/PolyForm-Noncommercial-1.0.0.txt",
+    "sha256": "ffcca38841adb694b6f380647e15f17c446a4d1656fed51a1e2041d064c94cc8",
+    "retrieved": "2026-10-13"
+  },
+  "LPPL-1.3c": {
+    "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/LPPL-1.3c.txt",
+    "sha256": "f0f307427080e67974f58f6b7f732039a966b3a7ae480dedee3275907104ac1f",
+    "retrieved": "2026-10-13"
+  },
+  "Biopython": {
+    "url": "https://raw.githubusercontent.com/biopython/biopython/master/LICENSE.rst",
+    "sha256": "11d1ebcaad2eb9f0f09a3df1deb4aca99a4da366ae9ae70f828c7447a24de453",
+    "retrieved": "2026-10-13"
+  }
+}

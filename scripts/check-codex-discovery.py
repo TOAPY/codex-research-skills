@@ -10,7 +10,12 @@ import threading
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--cwd', action='append', required=True)
 parser.add_argument('--output', type=Path)
+parser.add_argument('--names-from-repo', type=Path, help='Include every invocation name from this central skills repository')
 args = parser.parse_args()
+expected = set()
+if args.names_from_repo:
+    from manage import skills, name_of
+    expected = {name_of(p) for p in skills(args.names_from_repo.resolve()).values()}
 process = subprocess.Popen(['codex', '--no-daemon', 'app-server', '--stdio'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                            stderr=subprocess.DEVNULL, text=True, bufsize=1)
 inbox = queue.Queue()
@@ -46,7 +51,7 @@ try:
         print('cwd:', entry.get('cwd'))
         print('loader errors:', json.dumps(entry.get('errors', []), ensure_ascii=False))
         wanted = [s for s in entry.get('skills', []) if s.get('name', '').startswith('nature-') or
-                  s.get('name') in {'academic-research-suite', 'codex-autoresearch', 'researchwrite'}]
+                  s.get('name') in expected | {'academic-research-suite', 'codex-autoresearch', 'researchwrite'}]
         for s in wanted:
             print(s.get('name'), '|', s.get('scope'), '| enabled:', s.get('enabled'), '|', s.get('path'))
         print('Research skills:', len(wanted), '| all skills:', len(entry.get('skills', [])))

@@ -4,11 +4,13 @@ import argparse
 import json
 from pathlib import Path
 import shutil
+import re
 
 UPSTREAMS = {
     'academic': {'url': 'https://github.com/Imbad0202/academic-research-skills-codex', 'commit': '52228e8280dd1770e18ecfc3b1fdf16b13b58104', 'license': 'CC-BY-NC-4.0', 'version': '3.23.0'},
     'nature': {'url': 'https://github.com/Yuan1z0825/nature-skills', 'commit': '473e8d7b1b918fe37208d3a5e143a3ac9af4c91b', 'license': 'Apache-2.0; nested MIT exceptions retained'},
     'autoresearch': {'url': 'https://github.com/leo-lilinxiao/codex-autoresearch', 'commit': '0f54c571707487f59486ba7c50d405edfc746c19', 'license': 'MIT'},
+    'scientific': {'url': 'https://github.com/K-Dense-AI/scientific-agent-skills', 'commit': 'a1043ef544e3a100c28e70a736b6cf32554d0677', 'license': 'MIT collection; individual SKILL.md licenses retained; venue Elsevier assets LPPL-1.3-or-later', 'version': '2.72.0', 'reference_only': ['glycoengineering', 'phylogenetics', 'primekg', 'rowan']},
 }
 
 def copy(src, dst):
@@ -16,7 +18,91 @@ def copy(src, dst):
         return [n for n in names if n in {'.git', '__pycache__', '.DS_Store', '.pytest_cache', 'node_modules'} or n.endswith(('.pyc', '.pyo'))]
     shutil.copytree(src, dst, ignore=ignore)
 
-def package(academic, nature, autoresearch, output, pins=None):
+def package_scientific(scientific, root, record):
+    """Retain whole independent skill directories and the upstream MIT notice."""
+    count = 0
+    for p in sorted((scientific / 'skills').iterdir()):
+        if not p.is_dir():
+            continue
+        if not (p / 'SKILL.md').is_file():
+            raise RuntimeError('Unexpected scientific directory without SKILL.md: ' + str(p))
+        if p.name in record.get('reference_only', []):
+            continue
+        header = (p / 'SKILL.md').read_text(encoding='utf-8').split('---', 2)[1]
+        license_match = re.search(r'^license:\s*(.*)$', header, re.M)
+        declared = license_match.group(1).lower() if license_match else ''
+        if 'unknown' in declared or 'proprietary' in declared:
+            raise RuntimeError('New unclear individual license needs review: ' + p.name)
+        if (root / p.name).exists():
+            raise RuntimeError('Scientific skill directory conflicts: ' + p.name)
+        copy(p, root / p.name)
+        shutil.copy2(scientific / 'LICENSE.md', root / p.name / 'LICENSE.scientific-agent-skills.md')
+        (root / p.name / 'UPSTREAM.json').write_text(json.dumps(record, indent=2)+'\n', encoding='utf-8')
+        count += 1
+    scientific_support(scientific, root.parent.parent, record)
+    return count
+
+def scientific_support(scientific, output, record):
+    """Preserve upstream setup declarations, references and full license texts."""
+    support = output / 'upstream-support' / 'scientific-agent-skills'
+    support.mkdir(parents=True, exist_ok=True)
+    for name in ('README.md', 'LICENSE.md', 'CITATION.cff', 'pyproject.toml', 'plugin.json'):
+        shutil.copy2(scientific / name, support / name)
+    shutil.copy2(scientific / 'tests' / 'skill-requirements.toml', support / 'skill-requirements.toml')
+    texts = Path(__file__).resolve().parents[1] / 'upstream-support' / 'scientific-agent-skills' / 'licenses'
+    if texts.resolve() != (support / 'licenses').resolve():
+        copy(texts, support / 'licenses')
+    for p in (output / '.agents' / 'skills').iterdir():
+        if not (p / 'LICENSE.scientific-agent-skills.md').exists():
+            continue
+        raw = (p / 'SKILL.md').read_text(encoding='utf-8').split('---', 2)[1]
+        match = re.search(r'^license:\s*(.*)$', raw, re.M)
+        declaration = match.group(1).lower() if match else ''
+        key = None
+        if 'apache' in declaration:
+            key = 'Apache-2.0'
+        elif 'bsd-2-clause' in declaration:
+            key = 'BSD-2-Clause'
+        elif any(n in declaration for n in ('bsd-3-clause', '3 clause bsd', '3-clause bsd')):
+            key = 'BSD-3-Clause'
+        elif 'gpl-3.0-or-later' in declaration:
+            key = 'GPL-3.0-or-later'
+        elif 'gplv3' in declaration:
+            key = 'GPL-3.0-only'
+        elif 'gpl-2.0' in declaration:
+            key = 'GPL-2.0-only'
+        elif 'noncommercial' in declaration:
+            key = 'PolyForm-Noncommercial-1.0.0'
+        elif 'nc-sa' in declaration:
+            key = 'CC-BY-NC-SA-4.0'
+        elif 'cc-by-4.0' in declaration or 'creativecommons.org/licenses/by/4.0' in declaration:
+            key = 'CC-BY-4.0'
+        elif 'biopython' in declaration:
+            key = 'Biopython'
+        if key:
+            shutil.copy2(texts / (key + '.txt'), p / 'LICENSE.individual.txt')
+        if p.name == 'venue-templates':
+            shutil.copy2(texts / 'LPPL-1.3c.txt', p / 'assets' / 'journals' / 'LICENSE.LPPL.txt')
+            (p / 'assets' / 'journals' / 'THIRD_PARTY-NOTICE.md').write_text(
+                'The unmodified elsarticle-*.tex and elsarticle-*.bst files are an excerpt of the Elsevier Elsarticle Bundle. '
+                'Copyright 2007-2026 Elsevier Ltd. Their original LPPL 1.3-or-later notices are retained. '
+                'Obtain the complete bundle and manifest at https://ctan.org/pkg/elsarticle or '
+                'https://mirrors.ctan.org/macros/latex/contrib/elsarticle.zip . '
+                'Other templates keep their original contents and licensing declarations.\n', encoding='utf-8')
+    references = output / 'upstream-references'
+    references.mkdir(exist_ok=True)
+    items = []
+    for name in record.get('reference_only', []):
+        raw = (scientific / 'skills' / name / 'SKILL.md').read_text(encoding='utf-8')
+        declared = re.search(r'^license:\s*(.*)$', raw, re.M).group(1)
+        items.append({'name': name, 'declared_license': declared,
+                      'url': record['url'] + '/tree/' + record['commit'] + '/skills/' + name, 'path': 'skills/' + name})
+    (references / 'scientific-agent-skills.json').write_text(json.dumps({
+        'repository': record['url'], 'commit': record['commit'],
+        'reason': 'Individual skill licenses are unclear or proprietary. No skill content is redistributed.',
+        'skills': items}, indent=2) + '\n', encoding='utf-8')
+
+def package(academic, nature, autoresearch, output, pins=None, scientific=None):
     if output.exists():
         raise RuntimeError('Output must be a new directory; existing files are never overwritten.')
     root = output / '.agents' / 'skills'
@@ -94,6 +180,10 @@ def package(academic, nature, autoresearch, output, pins=None):
     for p in root.iterdir():
         key = 'academic' if p.name == 'academic-research-suite' else ('autoresearch' if p.name == 'codex-autoresearch' else 'nature')
         (p / 'UPSTREAM.json').write_text(json.dumps(records[key], indent=2, ensure_ascii=False)+'\n', encoding='utf-8')
+    if scientific is not None:
+        package_scientific(scientific, root, records['scientific'])
+    elif 'scientific' in records:
+        records = {key: value for key, value in records.items() if key != 'scientific'}
     (output / 'UPSTREAMS.json').write_text(json.dumps(records, indent=2, ensure_ascii=False)+'\n', encoding='utf-8')
     print('Prepared', len(list(root.iterdir())), 'skill directories at', root)
 
@@ -102,6 +192,7 @@ if __name__ == '__main__':
     parser.add_argument('--academic-root', required=True, type=Path)
     parser.add_argument('--nature-root', required=True, type=Path)
     parser.add_argument('--autoresearch-root', required=True, type=Path)
+    parser.add_argument('--scientific-root', type=Path)
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args()
-    package(args.academic_root, args.nature_root, args.autoresearch_root, args.output)
+    package(args.academic_root, args.nature_root, args.autoresearch_root, args.output, scientific=args.scientific_root)

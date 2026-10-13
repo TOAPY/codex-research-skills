@@ -1,6 +1,6 @@
 # Codex Research Skills：macOS、Windows 与 Cloud
 
-中央私有仓库：[TOAPY/codex-research-skills](https://github.com/TOAPY/codex-research-skills)。标准目录为 `.agents/skills/`；本机安装目录为 `~/.agents/skills/`（Windows：`%USERPROFILE%\.agents\skills\`）。包含 25 个完整技能目录：1 个 `academic-research-suite`，23 个 Nature 目录（22 个工作流 + `nature-shared` 支持包），1 个 `codex-autoresearch`。
+中央私有仓库：[TOAPY/codex-research-skills](https://github.com/TOAPY/codex-research-skills)。标准目录为 `.agents/skills/`；本机安装目录为 `~/.agents/skills/`（Windows：`%USERPROFILE%\.agents\skills\`）。包含 198 个完整技能目录：1 个 `academic-research-suite`，23 个 Nature 目录（22 个工作流 + `nature-shared` 支持包），1 个 `codex-autoresearch`，以及 K-Dense Scientific Agent Skills 2.72.0 的173 个技能（另外 4 个许可不明/专有技能采用上游引用）。
 
 科研运行依赖按任务安装；安装/同步不会启动实验、安装浏览器、部署 MCP、改 Codex 模型或启用 hooks。Autoresearch 保留上游 `allow_implicit_invocation: false`。
 
@@ -46,7 +46,7 @@ bash ./install-macos.sh --bootstrap https://github.com/TOAPY/codex-research-skil
 .\install-windows.ps1 -RepoUrl 'https://github.com/TOAPY/codex-research-skills.git'
 ```
 
-再次执行 install 等同于 sync：获取中央 GitHub 仓库当前分支的新提交，再部署本机副本。不会自动追踪三个上游的 main；上游更新先审查并锁定 SHA，再提交中央仓库，其他设备同步中央仓库的已审查版本。
+再次执行 install 等同于 sync：获取中央 GitHub 仓库当前分支的新提交，再部署本机副本。不会自动追踪四个上游的 main；上游更新先审查并锁定 SHA，再提交中央仓库，其他设备同步中央仓库的已审查版本。
 
 ## 一键同步
 
@@ -101,11 +101,12 @@ git commit -m "Customize nature-writing"
 | Imbad0202/academic-research-skills-codex | CC BY-NC 4.0，3.23.0；保留作者 Cheng-I Wu、完整 LICENSE、ars/NOTICE.md 及内含 experiment-agent 的许可。适用于符合许可的非商业用途；商业用途需另获许可。 |
 | Yuan1z0825/nature-skills | 根许可 Apache-2.0；为每个 Nature 技能附上 LICENSE.nature-skills。Downloader、Image2PPT 和 patent-disclosure 的内含 MIT 许可原样保留。新增路径说明和文件修改均带日期标记。 |
 | leo-lilinxiao/codex-autoresearch | MIT；保留完整根技能、scripts、references、agents、docs、tests 等和 LICENSE。未启动实验。 |
+| K-Dense-AI/scientific-agent-skills | 根许可 MIT，2.72.0，各 SKILL.md 独立许可原样保留；173 个技能完整复制。glycoengineering/phylogenetics/primekg 为 Unknown，rowan 为 Proprietary，只保留上游引用，取得相应许可后可用 scripts/install-scientific-references.py 安装，默认不复制或云端分发。每个已复制目录保留完整 LICENSE.scientific-agent-skills.md；what-if-oracle 是 CC BY-NC-SA 4.0、deepspot-m 是 PolyForm Noncommercial、venue-templates 的 Elsevier 资产是 LPPL。原有文档/PDF 插件不受影响；上游此版本不包含 Anthropic 的四个文档技能。 |
 | ChenLiu-1996/figures4papers | 上游没有明确 LICENSE，Nature 的 THIRD_PARTY_NOTICES.md 也明确限制复制/分发；不打包脚本/预览，只保留许可说明和上游链接。 |
 
 只有在取得 figures4papers 复制许可后，才可以运行 `scripts/fetch-restricted-reference.py --permission-obtained --commit <40位SHA> --destination <技能仓库之外的新目录>`。脚本不会执行其代码，也禁止下载到中央仓库或 `.agents/`。这部分不会自动安装到 Windows 或 Cloud。不要把私人获权副本再推送到中央仓库。
 
-官方安装依据：Academic README 的 Direct Skill Install，Nature README 5.3 的完整安装脚本（指定 `--dest`），Autoresearch README/INSTALL 的 skill-installer 和 Manual User Install。初始安装实际执行了官方 installer 和 Nature 脚本到临时审查目录，再由中央仓库管理已审查副本，防止与其他安装器相互覆盖。
+官方安装依据：Academic README 的 Direct Skill Install，Nature README 5.3 的完整安装脚本（指定 `--dest`），Autoresearch README/INSTALL 的 skill-installer 和 Manual User Install。初始安装实际执行了官方 installer 和 Nature 脚本到临时审查目录，再由中央仓库管理已审查副本，防止与其他安装器相互覆盖。K-Dense 使用其 README Option 2 的 GitHub CLI，先以 `gh skill install <已锁定的本地上游检出> --from-local --all --agent codex --dir <全新审查目录>` 审查完整安装；中央副本保留原始 SKILL.md 字节及统一 UPSTREAM.json，避免提交 CLI 写入的本机路径。
 
 更新上游时，先从相应 GitHub 上获取和审查具体提交、LICENSE 及第三方变化，然后用以下命令生成全新暂存目录：
 
@@ -113,7 +114,7 @@ git commit -m "Customize nature-writing"
 python3 scripts/fetch-upstreams.py --nature-commit <40位SHA> --output work/upstream-review
 ```
 
-Windows 同命令换成 `py -3`。不传覆盖参数时重新下载当前锁定版本；脚本不会运行上游脚本、覆盖在用技能或推送。复核 `work/upstream-review/UPSTREAMS.json` 和目录 diff，手动合并到 `.agents/skills/`（保留自己的修改），更新根锁文件，再提交及同步。新的许可证例外必须重新检查；初始审查不能替代新版审查。
+新增 K-Dense 更新参数为 `--scientific-commit <40位SHA>`。Windows 同命令换成 `py -3`。不传覆盖参数时重新下载当前锁定版本；脚本不会运行上游脚本、覆盖在用技能或推送。复核 `work/upstream-review/UPSTREAMS.json` 和目录 diff，手动合并到 `.agents/skills/`（保留自己的修改），更新根锁文件，再提交及同步。新的许可证例外必须重新检查；初始审查不能替代新版审查。
 
 ## 可选科研运行依赖
 
@@ -127,6 +128,7 @@ Windows 同命令换成 `py -3`。不传覆盖参数时重新下载当前锁定�
 | Academic Search MCP | 保留 mcp-server 全套文件；Python mcp/requests/toml/lxml 等，需 PUBMED_EMAIL；Scopus/Elsevier 等凭据可选，单独在本机或云端 secrets 管理。未把 Claude 安装脚本用于 Codex。 |
 | 论文下载的浏览器/机构访问 | 可选 web-access-main 等不在本仓库；用 Codex 可用浏览器工具，机构凭据和服务权限另配。 |
 | CNIPA 检索/OCR/模型接口 | 额外 requirements、Playwright Chromium 或模型凭据等只在需要时安装；不得将 Token、API key 或私人研究资料写进仓库。 |
+| K-Dense Scientific Agent Skills | 各技能的 compatibility、references 和安装示例决定依赖；使用分开的环境，避免不兼容科学包版本。上游开发工具要求 Python 3.13+、uv，不是本仓库同步的先决条件；原生 Windows 可安装/同步/识别全部文件，但部分科研工具另需 WSL、Linux、CUDA 或特定系统软件。未安装 BYOK、MCP、API 凭据或全量科学包。 |
 | Academic 高级运行时 | ars/requirements-dev.txt 为开发检查用途，PDF 内容分类器为单独的可选依赖；默认不启用 full-runtime hooks、跨模型上传或实验。 |
 
 本机系统 `python3` 是 3.9.6；Codex 内置工作运行时是 Python 3.12.14（其路径见报告），可用于需要 3.11+ 的控制脚本。`python3 --version` 不代表所有科研依赖已满足。技能文件可被识别，与每一个科研功能可执行是两项不同的验证。
@@ -137,7 +139,7 @@ OpenAI 官方说明：[技能目录与识别规则](https://learn.chatgpt.com/do
 
 1. 为 Codex/ChatGPT 的 GitHub 连接授予此私有仓库的读取权限。`gh auth login` 是本机 Git 认证，不会自动授权 Codex Cloud 的 GitHub 连接。
 2. 桌面端选择云端，创建/选择包含 `TOAPY/codex-research-skills` 的云端环境，使用含 `.agents/skills/` 的已提交分支（初始为 main）。按当前 UI 发布环境并在新云端任务中验证；已有任务保存自己的文件状态，更新后可能需要重新发布和开启新任务。
-3. 在新任务要求“只列出可用技能和路径，不运行实验”，核对 `$academic-research-suite`、`$nature-writing`/其他 Nature 工作流、`$codex-autoresearch`。原始 Nature 目录 nature-proposal-writer 的调用名为 `$researchwrite`；`nature-shared` 是支持包，不单独作为科研工作流调用。
+3. 在新任务要求“只列出可用技能和路径，不运行实验”，核对 `$academic-research-suite`、`$nature-writing`/其他 Nature 工作流、`$codex-autoresearch`、`$scientific-writing`、`$scanpy` 等 K-Dense 技能。原始 Nature 目录 nature-proposal-writer 的调用名为 `$researchwrite`；`nature-shared` 是支持包，不单独作为科研工作流调用。
 4. 已提交的副本无需联网下载技能。外部搜索、模型/API、MCP 或浏览器功能另受云端权限和网络限制；官方当前文档列出云端不支持 computer/browser use，因此这类 Nature 功能不能承诺与本机完全一致。
 
 其他 GitHub 项目推荐将中央仓库的已审查副本复制并提交为该项目自己的仓库级技能：
@@ -158,6 +160,6 @@ python3 scripts/manage.py validate
 python3 scripts/manage.py scan-secrets
 ```
 
-Windows 用 `py -3`。macOS 实际验证、Codex 原生 skills/list 返回与跨平台测试证据见 INSTALLATION-REPORT.md。在新 Codex 会话中打开 `/skills` 或输入 `$`；若列表未刷新，重启 Codex。安装后下一轮可使用新技能。
+Windows 用 `py -3`。macOS 实际验证、Codex 原生 skills/list 返回与跨平台测试证据见 INSTALLATION-REPORT.md；第四套技能的追加验证见 SCIENTIFIC-AGENT-SKILLS-REPORT.md。在新 Codex 会话中打开 `/skills` 或输入 `$`；若列表未刷新，重启 Codex。安装后下一轮可使用新技能。
 
 可选登录后同步方案：macOS 用户级 LaunchAgent（RunAtLoad，延迟等待网络）；Windows 用户级任务计划程序（登录触发、延迟 60 秒、无管理员权限、单实例）。只运行拉取/部署命令，不带 --push；遇本地修改或无网络则失败并记录日志，不自动冲突解决。当前没有创建任何计划任务或修改 hooks。若以后要启用，先给出具体任务文件、命令和日志路径，并取得你的同意。
