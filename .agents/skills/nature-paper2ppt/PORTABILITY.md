@@ -1,0 +1,3 @@
+# Codex portability overlay
+
+Modified 2026-10-13. The entire upstream skill directory is retained except the unlicensed figures4papers assets in nature-figure. All sibling nature-shared files are included. SKILL.md has an installation-path note; the Nature Figure audit example and Nature Downloader own Windows path are corrected. Original Claude/web-access-main instructions are optional references; that external skill is not supplied. Use available Codex browser tools where appropriate. Requirements files and MCP implementations are preserved, but their dependencies and credentials are configured only for a requested task. See the central README.

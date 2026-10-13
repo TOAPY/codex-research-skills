@@ -1,0 +1,18 @@
+{
+  "academic": {
+    "url": "https://github.com/Imbad0202/academic-research-skills-codex",
+    "commit": "52228e8280dd1770e18ecfc3b1fdf16b13b58104",
+    "license": "CC-BY-NC-4.0",
+    "version": "3.23.0"
+  },
+  "nature": {
+    "url": "https://github.com/Yuan1z0825/nature-skills",
+    "commit": "473e8d7b1b918fe37208d3a5e143a3ac9af4c91b",
+    "license": "Apache-2.0; nested MIT exceptions retained"
+  },
+  "autoresearch": {
+    "url": "https://github.com/leo-lilinxiao/codex-autoresearch",
+    "commit": "0f54c571707487f59486ba7c50d405edfc746c19",
+    "license": "MIT"
+  }
+}

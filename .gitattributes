@@ -1,0 +1,12 @@
+# Preserve all vendored bytes, including upstream hash-locked fixtures.
+* -text
+/README.md text eol=lf
+/LICENSES.md text eol=lf
+/INSTALLATION-REPORT.md text eol=lf
+/UPSTREAMS.json text eol=lf
+/install-macos.sh text eol=lf
+/sync-macos.sh text eol=lf
+/install-windows.ps1 text eol=lf
+/sync-windows.ps1 text eol=lf
+/scripts/*.py text eol=lf
+/tests/*.py text eol=lf

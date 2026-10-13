@@ -1,0 +1,23 @@
+# Only skill source belongs in this repository.
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+node_modules/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*
+tokens*
+autoresearch-results/
+research-data/
+private-data/
+.research-sync/
+.agents/research-skills-state.json
+*.local.json
+*.local.toml
+work/
+tools/
