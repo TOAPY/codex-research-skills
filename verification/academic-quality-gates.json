@@ -1,0 +1,63 @@
+{
+  "desktop-plugin-bundle": {
+    "messages": [
+      "ARS-Codex plugin and marketplace identities are aligned",
+      "Desktop plugin bundle uses a materialized skills directory",
+      "academic-research-suite is bundled without symlinks",
+      "Desktop plugin bundle is byte-identical to the canonical skill"
+    ],
+    "ok": true
+  },
+  "hook-safety": {
+    "messages": [
+      "1 hook command(s) are disabled-by-default and pass static safety checks"
+    ],
+    "ok": true
+  },
+  "manifest": {
+    "messages": [
+      "full-runtime manifest parses as JSON",
+      "package version 3.23.0 is aligned across upstream suite, source tag, skill, manifest, plugin, and VERSION",
+      "declared adapter paths exist",
+      "16 command routes have recipes",
+      "6 workflows have templates",
+      "81 quality gates have unique ids and resolvable runners",
+      "6 inactive upstream paths are unique and documented"
+    ],
+    "ok": true
+  },
+  "reviewer-fixture": {
+    "messages": [
+      "paper-reviewer full-mode fixture preserves independent reviewer sections before synthesis"
+    ],
+    "ok": true
+  },
+  "root-router": {
+    "messages": [
+      "root router routing-core block is byte-identical to the canonical ARS core",
+      "root router description uses 912/1024 Unicode code points"
+    ],
+    "ok": true
+  },
+  "single-root-skill": {
+    "messages": [
+      "single root skill is the only Codex-discoverable skill",
+      "5 core workflows match disk, root router, and full-runtime manifest",
+      "1 separately sourced workflow(s) excluded from core parity"
+    ],
+    "ok": true
+  },
+  "topology-experiment": {
+    "messages": [
+      "topology experiment cohort freezes 10 tasks across reviewer and research/pipeline strata",
+      "26 task-arm plans have valid input digests and acyclic DAGs"
+    ],
+    "ok": true
+  },
+  "upstream-lock": {
+    "messages": [
+      "upstream lock pins academic-research-skills@6ab4b03"
+    ],
+    "ok": true
+  }
+}

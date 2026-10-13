@@ -9,7 +9,7 @@ param(
 $ErrorActionPreference = 'Stop'
 if ($RepoUrl) {
     if (-not (Test-Path -LiteralPath $CloneDir)) {
-        & git clone -- $RepoUrl $CloneDir
+        & git clone -c core.longpaths=true -- $RepoUrl $CloneDir
         if ($LASTEXITCODE -ne 0) { throw 'Git clone failed; authenticate GitHub first.' }
     }
     & (Join-Path $CloneDir 'sync-windows.ps1') -Destination $Destination -Offline:$Offline -RemoteUrl $RepoUrl

@@ -99,6 +99,29 @@ class SyncTests(unittest.TestCase):
                 M.deploy(self.repo, self.dest, M.skills(self.repo), state)
         self.assertEqual('one\n', (self.dest/'demo'/'data.txt').read_text())
 
+    def test_existing_invocation_name_conflict_stops(self):
+        self.dest.mkdir(parents=True)
+        M.copy_skill(self.skill, self.dest/'different-directory')
+        with self.assertRaisesRegex(RuntimeError, 'name conflict'):
+            M.sync(self.args)
+        self.assertFalse((self.dest/'demo').exists())
+
+    def test_vendor_project_and_repeated_update(self):
+        project = self.repo.parent/'project'
+        project.mkdir()
+        self.run_git(project, 'init', '-b', 'main')
+        self.run_git(project, 'config', 'user.name', 'Project Fixture')
+        self.run_git(project, 'config', 'user.email', 'project@example.invalid')
+        (project/'.gitignore').write_text('.agents/research-skills-state.json\n')
+        self.run_git(project, 'add', '--', '.gitignore')
+        self.run_git(project, 'commit', '-m', 'Project fixture')
+        args = argparse.Namespace(repo=self.repo, project=project)
+        M.vendor(args)
+        self.run_git(project, 'add', '--', '.agents/skills', '.agents/research-skills-source.json')
+        self.run_git(project, 'commit', '-m', 'Vendor fixture')
+        M.vendor(args)
+        self.assertEqual('', M.git(project, 'status', '--porcelain'))
+
     def test_named_branch_divergence_stops(self):
         M.sync(self.args)
         peer = self.repo.parent/'peer'

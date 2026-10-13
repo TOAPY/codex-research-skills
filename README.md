@@ -30,11 +30,11 @@ winget install --id Python.Python.3.12 -e
 gh auth login --hostname github.com --git-protocol https --web
 gh auth setup-git
 $SkillsRepo = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Codex\codex-research-skills'
-git clone https://github.com/TOAPY/codex-research-skills.git $SkillsRepo
+git clone -c core.longpaths=true https://github.com/TOAPY/codex-research-skills.git $SkillsRepo
 & (Join-Path $SkillsRepo 'install-windows.ps1')
 ```
 
-若当前执行策略阻止自己审阅过的脚本，只对这一次进程运行 `powershell -NoProfile -ExecutionPolicy Bypass -File <install-windows.ps1完整路径>`；不修改永久执行策略。不要把示例中的尖括号原样输入。
+若当前执行策略阻止自己审阅过的脚本，只对这一次进程运行 `powershell -NoProfile -ExecutionPolicy Bypass -File <install-windows.ps1完整路径>`；不修改永久执行策略。不要把示例中的尖括号原样输入。Windows clone 设置仅作用于该仓库的 `core.longpaths=true`；最长仓库相对路径为 175 字符，遇长用户名/深层自选目录导致路径错误时改用较短的 clone 位置，不自动修改系统注册表。
 
 若只携带一份已经审阅的安装脚本，脚本也支持自动下载中央仓库：
 

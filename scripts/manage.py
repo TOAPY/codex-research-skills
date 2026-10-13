@@ -185,6 +185,8 @@ def scan_secrets(repo):
     print('Tracked-file credential scan passed (review research content separately).')
 
 def sync(args):
+    if args.push and args.offline:
+        fail('--push cannot be combined with --offline.')
     repo = args.repo.resolve()
     dest = args.dest.expanduser().absolute()
     with lock(dest):
@@ -206,8 +208,6 @@ def sync(args):
             state = preflight(repo, dest, source)
         deploy(repo, dest, source, state)
         if args.push:
-            if args.offline:
-                fail('--push cannot be combined with --offline.')
             scan_secrets(repo)
             subprocess.run(['git', '-C', str(repo), 'push', 'origin', f'HEAD:refs/heads/{branch}'], check=True)
 
